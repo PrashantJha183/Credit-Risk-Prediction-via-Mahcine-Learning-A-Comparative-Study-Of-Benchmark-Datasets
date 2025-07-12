@@ -4,7 +4,7 @@ from imblearn.over_sampling import SMOTE
 import numpy as np
 import os
 import argparse
-
+import joblib  # <-- new
 
 def preprocess_german():
     print("🔄 Preprocessing South German Credit Dataset...")
@@ -13,16 +13,21 @@ def preprocess_german():
 
     # Separate features and target
     X = df.drop("Credit_Risk", axis=1)
-    y = df["Credit_Risk"]
+    y = df["Credit_Risk"].replace({1: 0, 2: 1})
+
 
     # One-hot encoding for categorical features
     X_encoded = pd.get_dummies(X)
+
+    # ✅ Save feature names
+    feature_names = X_encoded.columns.tolist()
+    joblib.dump(feature_names, "./models/feature_names_german.pkl")
 
     # Scale numeric features
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X_encoded)
 
-    # Apply SMOTE to handle class imbalance
+    # Apply SMOTE
     smote = SMOTE(random_state=42)
     X_resampled, y_resampled = smote.fit_resample(X_scaled, y)
 
@@ -35,7 +40,7 @@ def preprocess_german():
 
 def preprocess_uci():
     print("🔄 Preprocessing UCI Credit Card Dataset...")
-    uci_path = os.path.join("data", "default of credit card clients.xls")
+    uci_path = os.path.join("data", "default_of_credit_card_clients.xls")
     df = pd.read_excel(uci_path, header=1)
 
     # Drop ID column if present
@@ -44,6 +49,10 @@ def preprocess_uci():
     # Separate features and target
     X = df.drop("default payment next month", axis=1)
     y = df["default payment next month"]
+
+    # ✅ Save feature names directly (already numerical)
+    feature_names = X.columns.tolist()
+    joblib.dump(feature_names, "./models/feature_names_uci.pkl")
 
     # Scale features
     scaler = StandardScaler()

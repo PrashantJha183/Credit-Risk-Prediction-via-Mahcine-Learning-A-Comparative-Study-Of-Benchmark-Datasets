@@ -8,12 +8,13 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import argparse
 import sys
+import time
 
 try:
     from xgboost import XGBClassifier
 except ImportError:
     XGBClassifier = None
-    print("⚠️ XGBoost not installed. Install xgboost to enable that model.")
+    print("XGBoost not installed. Install xgboost to enable that model.")
 
 def train_and_evaluate(dataset="german", model_name="rf", **kwargs):
     """
@@ -42,13 +43,13 @@ def train_and_evaluate(dataset="german", model_name="rf", **kwargs):
     X_resampled = np.load(X_path)
     y_resampled = np.load(y_path)
 
-    print(f"✅ Loaded data from {X_path}. Shape: {X_resampled.shape}")
+    print(f"Loaded data from {X_path}. Shape: {X_resampled.shape}")
 
     # Split
     X_train, X_test, y_train, y_test = train_test_split(
         X_resampled, y_resampled, test_size=0.2, random_state=42
     )
-    print(f"✅ Data split: Train={X_train.shape}, Test={X_test.shape}")
+    print(f"Data split: Train={X_train.shape}, Test={X_test.shape}")
 
     # Pick model
     if model_name.lower() == "rf":
@@ -64,7 +65,7 @@ def train_and_evaluate(dataset="german", model_name="rf", **kwargs):
         )
     elif model_name.lower() == "xgb":
         if XGBClassifier is None:
-            print("❌ XGBoost not available. Install it first.")
+            print("XGBoost not available. Install it first.")
             sys.exit(1)
         model = XGBClassifier(
             n_estimators=int(kwargs.get("n_estimators", 100)),
@@ -77,8 +78,15 @@ def train_and_evaluate(dataset="german", model_name="rf", **kwargs):
     else:
         raise ValueError(f"Unknown model name: {model_name}")
 
-    print(f"✅ Training {model_name.upper()} model...")
+    print(f"Training {model_name.upper()} model...")
+
+    # Measure training time
+    start_time = time.time()
     model.fit(X_train, y_train)
+    end_time = time.time()
+
+    train_time_sec = end_time - start_time
+    print(f"✅ Training time for {model_name.upper()} on {dataset.upper()}: {train_time_sec:.2f} seconds")
 
     # Predictions
     y_pred = model.predict(X_test)
@@ -97,7 +105,19 @@ def train_and_evaluate(dataset="german", model_name="rf", **kwargs):
     # Save results
     results_df = pd.DataFrame(report).transpose()
     results_df["roc_auc"] = roc_auc
-    results_df.to_csv(output_csv)
+
+    # Add training time as a separate row
+    time_row = pd.DataFrame({
+        "precision": [np.nan],
+        "recall": [np.nan],
+        "f1-score": [np.nan],
+        "support": [np.nan],
+        "roc_auc": [np.nan],
+        "training_time_sec": [train_time_sec]
+    })
+
+    results_with_time = pd.concat([results_df, time_row], ignore_index=True)
+    results_with_time.to_csv(output_csv, index=False)
     print(f"✅ Saved results to {output_csv}")
 
     # Print report
@@ -126,10 +146,29 @@ def train_and_evaluate(dataset="german", model_name="rf", **kwargs):
         plt.legend(loc="lower right")
         plt.tight_layout()
         plt.savefig(plot_path)
-        print(f"✅ Plot saved to {plot_path}")
+        print(f"Plot saved to {plot_path}")
         plt.close()
     else:
-        print("⚠️ No classes found for plotting.")
+        print("No classes found for plotting.")
+
+    # Save summary CSV for training times
+    summary_path = eval_dir / "training_times_summary.csv"
+    summary_exists = summary_path.exists()
+
+    summary_row = pd.DataFrame({
+        "dataset": [dataset],
+        "model": [model_name.upper()],
+        "train_time_sec": [train_time_sec]
+    })
+
+    if summary_exists:
+        existing = pd.read_csv(summary_path)
+        combined = pd.concat([existing, summary_row], ignore_index=True)
+        combined.to_csv(summary_path, index=False)
+    else:
+        summary_row.to_csv(summary_path, index=False)
+
+    print(f"✅ Training time appended to {summary_path}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -143,7 +182,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # Pass only relevant args
     train_and_evaluate(
         dataset=args.dataset,
         model_name=args.model,
