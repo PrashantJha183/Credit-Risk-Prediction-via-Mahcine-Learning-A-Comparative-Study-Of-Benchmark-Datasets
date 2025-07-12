@@ -4,6 +4,8 @@ This repository implements experiments from the paper:
 
 > **Credit Risk Prediction Using Machine Learning: A Comparative Study on Benchmark Datasets**
 
+---
+
 ## 🔍 Project Description
 
 We compare machine learning models for credit risk prediction using:
@@ -36,22 +38,33 @@ credit-risk-prediction/
 │   ├── default_of_credit_card_clients.xls
 │   ├── south_german_credit.csv
 │   ├── X_resampled_german.npy
-│   └── y_resampled_german.npy
+│   ├── y_resampled_german.npy
+│   ├── X_resampled_uci.npy
+│   └── y_resampled_uci.npy
 ├── notebooks/
 │   ├── 01_data_exploration.ipynb
 │   ├── 02_preprocessing.ipynb
 │   ├── 03_model_training.ipynb
-│   └── 04_evaluation.ipynb
+│   ├── 04_evaluation.ipynb
+│   └── 05_class_distribution_german.ipynb
 ├── src/
 │   ├── data_utils.py
 │   ├── preprocess.py
 │   ├── train_model.py
 │   ├── evaluate.py
-│   └── convert_german_to_csv.py
+│   ├── convert_german_to_csv.py
+│   └── plot_uci_class_distribution.py
 ├── evaluation/
-│   ├── results_uci.csv
+│   ├── class_dist_after_smote_german.png
+│   ├── class_dist_before_smote_german.png
 │   ├── results_german.csv
-│   └── results_plot.png
+│   ├── results_plot_german.png
+│   ├── results_plot_uci.png
+│   ├── results_plot.png
+│   └── results_uci.csv
+├── models/
+│   ├── rf_model_german.pkl
+│   └── rf_model_uci.pkl  
 ├── requirements.txt
 └── README.md
 ```
@@ -66,11 +79,12 @@ Clone the repo:
 git clone https://github.com/PrashantJha183/Credit-risk-prediction.git
 cd Credit-risk-prediction
 ```
+
 Install dependencies:
 
 ```bash
 python -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
+source venv/bin/activate    # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -91,6 +105,13 @@ python src/preprocess.py --dataset uci
 python src/preprocess.py --dataset german
 ```
 
+### Plot Class Distributions
+
+```bash
+python src/plot_uci_class_distribution.py
+python src/preprocess.py --dataset german
+```
+
 ### Train Models
 
 ```bash
@@ -108,7 +129,7 @@ python src/evaluate.py
 
 ## 🗂 Results
 
-Evaluation results stored in:
+Evaluation results are stored in:
 
 - `evaluation/results_uci.csv`
 - `evaluation/results_german.csv`
@@ -137,18 +158,18 @@ If using this repository, please cite:
 ```
 
 ---
+
 ## 📊 Data Sources
 
 Data used in this project comes from publicly available benchmark datasets:
 
 - [UCI Credit Card Default Dataset](https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients)
-- [South German Credit Dataset](https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data))
+- [South German Credit Dataset](https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)
 
 ---
+
 ## 🔗 Related Work
 
 See references in the paper for further reading on credit scoring and machine learning.
 
 ---
-
-

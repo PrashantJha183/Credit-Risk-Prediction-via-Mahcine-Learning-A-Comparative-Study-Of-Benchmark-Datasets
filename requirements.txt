@@ -6,3 +6,5 @@ matplotlib
 seaborn
 imblearn
 jupyter
+xlrd>=2.0.1
+
