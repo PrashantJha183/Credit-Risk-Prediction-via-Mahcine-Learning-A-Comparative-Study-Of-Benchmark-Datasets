@@ -60,15 +60,13 @@ credit-risk-prediction/
 
 ## ⚙️ Setup
 
-Install dependencies:
-
-
-1. **Clone the repo**
+Clone the repo:
 
 ```bash
 git clone https://github.com/PrashantJha183/Credit-risk-prediction.git
 cd Credit-risk-prediction
 ```
+Install dependencies:
 
 ```bash
 python -m venv venv
