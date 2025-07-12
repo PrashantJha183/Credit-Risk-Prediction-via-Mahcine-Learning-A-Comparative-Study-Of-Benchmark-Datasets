@@ -83,8 +83,8 @@ src/
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>
+git clone https://github.com/PrashantJha183/Credit-risk-prediction.git
+cd Credit-risk-prediction
 ```
 
 2. **Create a virtual environment (recommended)**
