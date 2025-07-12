@@ -164,7 +164,7 @@ If using this repository, please cite:
 Data used in this project comes from publicly available benchmark datasets:
 
 - [UCI Credit Card Default Dataset](https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients)
-- [South German Credit Dataset](https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)
+- [South German Credit Dataset](https://archive.ics.uci.edu/ml/datasets/statlog+german+credit+data)
 
 ---
 
