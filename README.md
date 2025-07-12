@@ -68,6 +68,7 @@ Install dependencies:
 ```bash
 git clone https://github.com/PrashantJha183/Credit-risk-prediction.git
 cd Credit-risk-prediction
+```
 
 ```bash
 python -m venv venv
