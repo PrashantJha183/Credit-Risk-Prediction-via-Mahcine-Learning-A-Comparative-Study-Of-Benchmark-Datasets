@@ -1,0 +1,45 @@
+# Python virtual environment
+venv/
+ENV/
+env/
+
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Data files
+data/*.npy
+data/*.csv
+data/*.xls
+
+# Model artifacts (if any)
+*.pkl
+*.joblib
+*.h5
+
+# OS or editor-specific
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Logs
+*.log
+
+# Environment and IDE settings
+*.env
+*.idea/
+*.swp
+
+# Results and plots
+evaluation/*.png
+evaluation/*.csv
+
+# Hidden system files
+ehthumbs.db
+desktop.ini
