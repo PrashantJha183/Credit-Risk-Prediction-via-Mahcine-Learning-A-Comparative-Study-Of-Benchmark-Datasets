@@ -1,5 +1,36 @@
 cff-version: 1.2.0
-message: "If you use this dataset or project, please cite the following sources."
+message: "If you use this software or datasets, please cite as follows."
+
+# Author of repository
+authors:
+  - family-names: "Jha"
+    given-names: "Prashant"
+    orcid: ""
+
+
+title: "Credit Risk Prediction using Machine Learning"
+version: "1.0.0"
+date-released: 2025-07-12
+url: "https://github.com/PrashantJha183/Credit-risk-prediction"
+
+# The preferred citation 
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Jha"
+      given-names: "Prashant"
+      orcid: "https://orcid.org/0000-0000-0000-0000"
+  title: "Credit Risk Prediction Using Machine Learning: A Comparative Study on Benchmark Datasets g"
+  journal: ""   
+  volume: 
+  issue: 
+  year: 
+  month:
+  start:
+  end: 
+  doi: "" 
+
+# Additional references (datasets used)
 references:
   - type: dataset
     title: "Default of Credit Card Clients Dataset"
@@ -9,8 +40,8 @@ references:
       - family-names: Lien
         given-names: Che-hui
     year: 2009
-    url: https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients
     publisher: UCI Machine Learning Repository
+    url: https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients
 
   - type: dataset
     title: "South German Credit Dataset"
@@ -18,5 +49,5 @@ references:
       - family-names: Hofmann
         given-names: Peter
     year: 2022
-    url: https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)
     publisher: UCI Machine Learning Repository
+    url: https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)
