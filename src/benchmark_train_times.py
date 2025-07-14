@@ -7,6 +7,7 @@ from sklearn.svm import SVC
 from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 from pathlib import Path
+import matplotlib.pyplot as plt
 
 # ---------------------------
 # Model configs
@@ -87,3 +88,23 @@ print(pivot_table)
 # Save CSV for paper
 pivot_table.to_csv("evaluation/training_times_table.csv")
 print("\n✅ Table saved to evaluation/training_times_table.csv")
+
+
+
+import matplotlib.pyplot as plt
+
+# Plotting
+pivot_table.plot(kind="bar", figsize=(10, 6), color=["#4C72B0", "#55A868"])
+plt.title("Training Time Comparison of ML Models on UCI and German Datasets")
+plt.xlabel("Model")
+plt.ylabel("Time (seconds)")
+plt.xticks(rotation=0)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+
+# Save figure
+plot_path = "evaluation/training_time_comparison.png"
+plt.savefig(plot_path)
+print(f"📊 Plot saved to {plot_path}")
+plt.show()
+

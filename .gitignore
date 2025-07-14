@@ -37,8 +37,8 @@ Thumbs.db
 *.swp
 
 # Results and plots
-evaluation/*.png
-evaluation/*.csv
+# evaluation/*.png
+# evaluation/*.csv
 
 # Hidden system files
 ehthumbs.db

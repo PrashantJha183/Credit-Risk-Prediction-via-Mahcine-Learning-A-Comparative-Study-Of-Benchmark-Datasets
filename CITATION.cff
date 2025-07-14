@@ -1,19 +1,22 @@
 cff-version: 1.2.0
-message: "If you use this dataset, please cite the following sources."
+message: "If you use this dataset or project, please cite the following sources."
 references:
   - type: dataset
-    title: Default of Credit Card Clients
+    title: "Default of Credit Card Clients Dataset"
     authors:
       - family-names: Yeh
-        given-names: I.-C.
+        given-names: I-Cheng
       - family-names: Lien
-        given-names: C.-h.
+        given-names: Che-hui
     year: 2009
     url: https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients
+    publisher: UCI Machine Learning Repository
+
   - type: dataset
-    title: South German Credit Data
+    title: "South German Credit Dataset"
     authors:
       - family-names: Hofmann
-        given-names: P.
+        given-names: Peter
     year: 2022
     url: https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)
+    publisher: UCI Machine Learning Repository

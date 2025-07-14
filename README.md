@@ -107,16 +107,10 @@ pip install -r requirements.txt
 
 ### Train and evaluate a model
 
-Example: Train a Random Forest on the UCI dataset:
+Example: Train a model for UCI and South German dataset:
 
 ```bash
-python src/train_model.py --dataset uci --model rf
-```
-
-Train XGBoost on the German dataset:
-
-```bash
-python src/train_model.py --dataset german --model xgb
+python src/train_model.py 
 ```
 
 See more arguments in:

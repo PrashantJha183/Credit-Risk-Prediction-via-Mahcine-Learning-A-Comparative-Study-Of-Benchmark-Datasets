@@ -3,41 +3,79 @@ import matplotlib.pyplot as plt
 import joblib
 from sklearn.metrics import roc_curve, auc
 from sklearn.model_selection import train_test_split
+from pathlib import Path
 
-# Load resampled data
-X = np.load("data/X_resampled_uci.npy")
-y = np.load("data/y_resampled_uci.npy")
+def plot_roc_curves_uci():
+    data_dir = Path("data")
+    models_dir = Path("models")
+    eval_dir = Path("evaluation")
+    eval_dir.mkdir(exist_ok=True)
 
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+    # Load UCI data
+    X_path = data_dir / "X_resampled_uci.npy"
+    y_path = data_dir / "y_resampled_uci.npy"
+    
+    X = np.load(X_path)
+    y = np.load(y_path)
 
-# Load trained model (e.g. Random Forest)
-model = joblib.load("models/rf_model_uci.pkl")
+    # Split test data (same split as training)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-# Predict probabilities
-y_probs = model.predict_proba(X_test)[:, 1]
+    model_names = ["rf", "logreg", "xgb", "svm"]
+    colors = {
+        "rf": "blue",
+        "logreg": "darkorange",
+        "xgb": "green",
+        "svm": "purple"
+    }
 
-# Compute ROC curve
-fpr, tpr, _ = roc_curve(y_test, y_probs)
-roc_auc = auc(fpr, tpr)
+    plt.figure(figsize=(7, 6))
 
-# Plot ROC curve
-plt.figure(figsize=(6,5))
-plt.plot(fpr, tpr, color='darkorange', lw=2,
-         label=f"ROC curve (AUC = {roc_auc:.3f})")
-plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
-plt.title("ROC Curve - UCI Credit Card Default")
-plt.legend(loc="lower right")
-plt.tight_layout()
+    for model_name in model_names:
+        model_path = models_dir / f"{model_name}_model_uci.pkl"
 
-# Save figure
-plt.savefig("evaluation/roc_curve_uci.png", dpi=300)
-plt.show()
+        if not model_path.exists():
+            print(f"⚠️ Model not found: {model_path}")
+            continue
 
-print("ROC curve saved as evaluation/roc_curve_uci.png")
+        print(f"🔹 Loading model: {model_name.upper()}")
+        model = joblib.load(model_path)
+
+        # Predict probabilities
+        if hasattr(model, "predict_proba"):
+            y_probs = model.predict_proba(X_test)[:, 1]
+        elif hasattr(model, "decision_function"):
+            y_probs = model.decision_function(X_test)
+        else:
+            print(f"⚠️ Model {model_name.upper()} does not support probability outputs. Skipping.")
+            continue
+
+        fpr, tpr, _ = roc_curve(y_test, y_probs)
+        roc_auc = auc(fpr, tpr)
+
+        plt.plot(
+            fpr, tpr,
+            label=f"{model_name.upper()} (AUC = {roc_auc:.3f})",
+            color=colors[model_name],
+            lw=2
+        )
+
+    plt.plot([0, 1], [0, 1], color='gray', linestyle='--', lw=1)
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    plt.title("ROC Curve - UCI Credit Card Default Dataset")
+    plt.legend(loc="lower right")
+    plt.tight_layout()
+
+    plot_path = eval_dir / "roc_curve_uci.png"
+    plt.savefig(plot_path, dpi=300)
+    plt.show()
+
+    print(f"✅ ROC curves saved to {plot_path}")
+
+if __name__ == "__main__":
+    plot_roc_curves_uci()

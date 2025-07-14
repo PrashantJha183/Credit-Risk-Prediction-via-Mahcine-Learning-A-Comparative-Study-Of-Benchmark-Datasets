@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
@@ -13,6 +14,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 X_path = "data/X_resampled_german.npy"
 y_path = "data/y_resampled_german.npy"
 output_csv = "evaluation/results_table_german.csv"
+output_plot = "evaluation/results_table_german_plot.png"
 
 # ----------------------------------------------------
 # Load data
@@ -72,3 +74,38 @@ print(f"✅ Saved results table to: {output_csv}")
 
 print("\n=== Table II Data ===")
 print(df_results)
+
+# ----------------------------------------------------
+# Plot comparison chart
+# ----------------------------------------------------
+
+# Metrics to plot
+metrics_to_plot = ["Accuracy", "Precision", "Recall", "F1-Score", "ROC-AUC"]
+
+# Create a figure
+plt.figure(figsize=(10, 6))
+
+# Plot each metric as a separate bar set
+bar_width = 0.15
+positions = np.arange(len(df_results["Model"]))
+
+for idx, metric in enumerate(metrics_to_plot):
+    plt.bar(
+        positions + idx * bar_width,
+        df_results[metric],
+        width=bar_width,
+        label=metric
+    )
+
+plt.xticks(positions + bar_width * (len(metrics_to_plot)-1) / 2, df_results["Model"], rotation=45, ha="right")
+plt.ylim(0, 1.1)
+plt.ylabel("Score")
+plt.title("Model Performance on German Dataset")
+plt.legend()
+plt.tight_layout()
+
+# Save figure
+plt.savefig(output_plot, dpi=300)
+print(f"✅ Saved plot to: {output_plot}")
+
+plt.show()

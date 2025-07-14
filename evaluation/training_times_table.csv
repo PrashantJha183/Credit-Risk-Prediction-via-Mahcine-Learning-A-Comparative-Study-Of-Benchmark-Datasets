@@ -1,0 +1,5 @@
+Model,UCI,German
+Logistic Reg.,0.82,0.017
+Random Forest,16.168,0.482
+SVM,26.458,0.4
+XGBoost,0.596,0.173

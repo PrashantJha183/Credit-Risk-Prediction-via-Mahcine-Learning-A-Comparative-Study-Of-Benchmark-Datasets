@@ -1,112 +1,119 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, roc_auc_score
-import matplotlib.pyplot as plt
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, roc_auc_score, roc_curve
 from pathlib import Path
-import argparse
-import sys
 import time
+import joblib
+import sys
 
+# Import XGBoost if available
 try:
     from xgboost import XGBClassifier
 except ImportError:
     XGBClassifier = None
     print("XGBoost not installed. Install xgboost to enable that model.")
 
-def train_and_evaluate(dataset="german", model_name="rf", **kwargs):
+# ----------------------------------------------------------
+# Function to train a single model
+# ----------------------------------------------------------
+
+def train_one_model(model_name, X_train, y_train, X_test, y_test, dataset, eval_dir):
     """
-    Train a ML model on preprocessed data and save results & plots
+    Train one model and save:
+      - CSV with metrics (including ROC AUC and time)
+      - Model file
+      - ROC curve data for plotting later
     """
 
-    # Paths
-    data_dir = Path("data")
-    eval_dir = Path("evaluation")
-    eval_dir.mkdir(exist_ok=True)
-
-    if dataset == "german":
-        X_path = data_dir / "X_resampled_german.npy"
-        y_path = data_dir / "y_resampled_german.npy"
-        output_csv = eval_dir / "results_german.csv"
-        plot_path = eval_dir / "results_plot_german.png"
-    elif dataset == "uci":
-        X_path = data_dir / "X_resampled_uci.npy"
-        y_path = data_dir / "y_resampled_uci.npy"
-        output_csv = eval_dir / "results_uci.csv"
-        plot_path = eval_dir / "results_plot_uci.png"
-    else:
-        raise ValueError("Unknown dataset specified.")
-
-    # Load arrays
-    X_resampled = np.load(X_path)
-    y_resampled = np.load(y_path)
-
-    print(f"Loaded data from {X_path}. Shape: {X_resampled.shape}")
-
-    # Split
-    X_train, X_test, y_train, y_test = train_test_split(
-        X_resampled, y_resampled, test_size=0.2, random_state=42
-    )
-    print(f"Data split: Train={X_train.shape}, Test={X_test.shape}")
-
-    # Pick model
-    if model_name.lower() == "rf":
+    # ----------------------------------------------------------
+    # Create model
+    # ----------------------------------------------------------
+    if model_name == "rf":
         model = RandomForestClassifier(
-            n_estimators=int(kwargs.get("n_estimators", 100)),
+            n_estimators=100,
             random_state=42
         )
-    elif model_name.lower() == "logreg":
+    elif model_name == "logreg":
         model = LogisticRegression(
             solver="liblinear",
-            C=float(kwargs.get("C", 1.0)),
-            max_iter=int(kwargs.get("max_iter", 100))
+            C=1.0,
+            max_iter=100
         )
-    elif model_name.lower() == "xgb":
+    elif model_name == "xgb":
         if XGBClassifier is None:
-            print("XGBoost not available. Install it first.")
-            sys.exit(1)
+            print("XGBoost not available. Skipping XGB.")
+            return None
         model = XGBClassifier(
-            n_estimators=int(kwargs.get("n_estimators", 100)),
-            max_depth=int(kwargs.get("max_depth", 3)),
-            learning_rate=float(kwargs.get("learning_rate", 0.1)),
+            n_estimators=100,
+            max_depth=3,
+            learning_rate=0.1,
             use_label_encoder=False,
             eval_metric="logloss",
             random_state=42
         )
+    elif model_name == "svm":
+        print("⚠️ Training SVM with probability=True can be slow on large datasets.")
+        model = SVC(
+            kernel="rbf",
+            probability=True,
+            random_state=42
+        )
     else:
-        raise ValueError(f"Unknown model name: {model_name}")
+        print(f"Unknown model name: {model_name}")
+        return None
 
-    print(f"Training {model_name.upper()} model...")
+    print(f"🔹 Training model: {model_name.upper()} on {dataset.upper()}")
 
-    # Measure training time
+    # ----------------------------------------------------------
+    # Train
+    # ----------------------------------------------------------
     start_time = time.time()
     model.fit(X_train, y_train)
     end_time = time.time()
 
     train_time_sec = end_time - start_time
-    print(f"✅ Training time for {model_name.upper()} on {dataset.upper()}: {train_time_sec:.2f} seconds")
+    print(f"✅ Training time: {train_time_sec:.2f} seconds")
 
+    # ----------------------------------------------------------
     # Predictions
+    # ----------------------------------------------------------
     y_pred = model.predict(X_test)
-    try:
+
+    # Get probability scores for ROC AUC
+    if hasattr(model, "predict_proba"):
         y_proba = model.predict_proba(X_test)[:, 1]
-    except:
+    elif hasattr(model, "decision_function"):
+        y_proba = model.decision_function(X_test)
+    else:
         y_proba = None
 
-    # Evaluation
+    # ----------------------------------------------------------
+    # Metrics
+    # ----------------------------------------------------------
     report = classification_report(y_test, y_pred, output_dict=True)
+    results_df = pd.DataFrame(report).transpose()
+
     if y_proba is not None:
         roc_auc = roc_auc_score(y_test, y_proba)
     else:
         roc_auc = None
 
-    # Save results
-    results_df = pd.DataFrame(report).transpose()
-    results_df["roc_auc"] = roc_auc
+    # Add a row for ROC AUC
+    roc_row = pd.DataFrame({
+        "precision": [np.nan],
+        "recall": [np.nan],
+        "f1-score": [np.nan],
+        "support": [np.nan],
+        "roc_auc": [roc_auc],
+        "training_time_sec": [np.nan]
+    })
 
-    # Add training time as a separate row
+    # Add a row for training time
     time_row = pd.DataFrame({
         "precision": [np.nan],
         "recall": [np.nan],
@@ -116,78 +123,88 @@ def train_and_evaluate(dataset="german", model_name="rf", **kwargs):
         "training_time_sec": [train_time_sec]
     })
 
-    results_with_time = pd.concat([results_df, time_row], ignore_index=True)
+    # Combine everything
+    results_with_time = pd.concat([results_df, roc_row, time_row], ignore_index=True)
+
+    # ----------------------------------------------------------
+    # Save results CSV
+    # ----------------------------------------------------------
+    output_csv = eval_dir / f"results_{dataset}_{model_name}.csv"
     results_with_time.to_csv(output_csv, index=False)
-    print(f"✅ Saved results to {output_csv}")
+    print(f"✅ Results saved to {output_csv}")
 
-    # Print report
-    print("Classification Report:")
-    print(classification_report(y_test, y_pred))
+    # ----------------------------------------------------------
+    # Save model
+    # ----------------------------------------------------------
+    models_dir = Path("models")
+    models_dir.mkdir(exist_ok=True)
+    model_path = models_dir / f"{model_name}_model_{dataset}.pkl"
+    joblib.dump(model, model_path)
+    print(f"✅ Model saved to {model_path}")
+
+    # ----------------------------------------------------------
+    # Save ROC curve data
+    # ----------------------------------------------------------
+    if y_proba is not None:
+        fpr, tpr, thresholds = roc_curve(y_test, y_proba)
+        roc_data = pd.DataFrame({
+            "fpr": fpr,
+            "tpr": tpr,
+            "thresholds": thresholds
+        })
+        roc_csv_path = eval_dir / f"roc_curve_{dataset}_{model_name}.csv"
+        roc_data.to_csv(roc_csv_path, index=False)
+        print(f"✅ ROC curve data saved to {roc_csv_path}")
+
+    # Print ROC AUC
     if roc_auc is not None:
-        print(f"ROC AUC: {roc_auc:.4f}")
+        print(f"✅ ROC AUC for {model_name.upper()} on {dataset.upper()}: {roc_auc:.4f}")
 
-    # Plotting
-    class_labels = [str(cls) for cls in sorted(np.unique(y_test))]
-    classes_to_plot = [cls for cls in class_labels if cls in results_df.index]
+    return model
 
-    if classes_to_plot:
-        filtered = results_df.loc[
-            classes_to_plot,
-            ["precision", "recall", "f1-score"]
-        ]
 
-        filtered.plot(
-            kind="bar",
-            figsize=(8, 5),
-            title=f"Performance Metrics per Class ({dataset.title()}, {model_name.upper()})"
+# ----------------------------------------------------------
+# Main script
+# ----------------------------------------------------------
+
+def main():
+    data_dir = Path("data")
+    eval_dir = Path("evaluation")
+    eval_dir.mkdir(exist_ok=True)
+
+    datasets = ["german", "uci"]
+    model_names = ["rf", "logreg", "xgb", "svm"]
+
+    for dataset in datasets:
+        if dataset == "german":
+            X_path = data_dir / "X_resampled_german.npy"
+            y_path = data_dir / "y_resampled_german.npy"
+        elif dataset == "uci":
+            X_path = data_dir / "X_resampled_uci.npy"
+            y_path = data_dir / "y_resampled_uci.npy"
+        else:
+            raise ValueError("Unknown dataset specified.")
+
+        # Load data
+        X = np.load(X_path)
+        y = np.load(y_path)
+        print(f"\n==============================")
+        print(f"🔹 Loaded data for {dataset.upper()}: {X.shape}")
+
+        # Split
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42
         )
-        plt.ylabel("Score")
-        plt.ylim(0, 1)
-        plt.legend(loc="lower right")
-        plt.tight_layout()
-        plt.savefig(plot_path)
-        print(f"Plot saved to {plot_path}")
-        plt.close()
-    else:
-        print("No classes found for plotting.")
+        print(f"Train shape: {X_train.shape}, Test shape: {X_test.shape}")
 
-    # Save summary CSV for training times
-    summary_path = eval_dir / "training_times_summary.csv"
-    summary_exists = summary_path.exists()
-
-    summary_row = pd.DataFrame({
-        "dataset": [dataset],
-        "model": [model_name.upper()],
-        "train_time_sec": [train_time_sec]
-    })
-
-    if summary_exists:
-        existing = pd.read_csv(summary_path)
-        combined = pd.concat([existing, summary_row], ignore_index=True)
-        combined.to_csv(summary_path, index=False)
-    else:
-        summary_row.to_csv(summary_path, index=False)
-
-    print(f"✅ Training time appended to {summary_path}")
+        for model_name in model_names:
+            train_one_model(
+                model_name,
+                X_train, y_train,
+                X_test, y_test,
+                dataset,
+                eval_dir
+            )
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", choices=["german", "uci"], default="german", help="Dataset to use.")
-    parser.add_argument("--model", choices=["rf", "xgb", "logreg"], default="rf", help="Model to train.")
-    parser.add_argument("--n_estimators", type=int, default=100, help="Number of trees for RF/XGB.")
-    parser.add_argument("--max_depth", type=int, default=3, help="Max tree depth for XGB.")
-    parser.add_argument("--learning_rate", type=float, default=0.1, help="Learning rate for XGB.")
-    parser.add_argument("--C", type=float, default=1.0, help="Inverse regularization strength for Logistic Regression.")
-    parser.add_argument("--max_iter", type=int, default=100, help="Max iterations for Logistic Regression.")
-
-    args = parser.parse_args()
-
-    train_and_evaluate(
-        dataset=args.dataset,
-        model_name=args.model,
-        n_estimators=args.n_estimators,
-        max_depth=args.max_depth,
-        learning_rate=args.learning_rate,
-        C=args.C,
-        max_iter=args.max_iter
-    )
+    main()
