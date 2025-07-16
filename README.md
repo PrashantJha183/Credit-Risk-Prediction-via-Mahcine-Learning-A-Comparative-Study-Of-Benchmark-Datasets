@@ -63,22 +63,20 @@ pip install -r requirements.txt
 ### Train and evaluate a model
 
 1. **Preprocess data**
-Prepare the data for both datasets:
+
 
 ```bash
 python src/preprocess.py
- 
 ```
 
 2. **Train Models**
-Train a model for UCI and South German dataset:
+
 
 ```bash
 python src/train_model.py 
 ```
 
 3. **Evaluate All Models**
-Run evaluation scripts for model performance comparisons:
 
 ```bash
 python src/evaluate_all_models_uci.py
