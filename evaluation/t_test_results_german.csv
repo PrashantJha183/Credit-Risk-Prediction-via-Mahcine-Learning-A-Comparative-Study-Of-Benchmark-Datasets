@@ -1,0 +1,7 @@
+Model 1,Model 2,Mean AUC Model 1,Std Dev Model 1,Mean AUC Model 2,Std Dev Model 2,T-statistic,P-value
+Random Forest,Logistic Regression,0.9274,0.0217,0.8276,0.0178,7.9566,4.5e-05
+Random Forest,XGBoost,0.9274,0.0217,0.9084,0.0266,1.2356,0.251666
+Random Forest,SVM,0.9274,0.0217,0.9143,0.0135,1.1519,0.282636
+Logistic Regression,XGBoost,0.8276,0.0178,0.9084,0.0266,-5.6462,0.000484
+Logistic Regression,SVM,0.8276,0.0178,0.9143,0.0135,-8.6857,2.4e-05
+XGBoost,SVM,0.9084,0.0266,0.9143,0.0135,-0.4366,0.673969

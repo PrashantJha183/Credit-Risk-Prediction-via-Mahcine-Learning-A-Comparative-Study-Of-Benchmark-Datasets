@@ -23,58 +23,13 @@ This work contributes to improving credit risk scoring and aligns with regulator
 
 Your project folders and key files:
 
-```
-data/
-├── default_of_credit_card_clients.xls
-├── south_german_credit.csv
-├── X_resampled_uci.npy
-├── y_resampled_uci.npy
-├── X_resampled_german.npy
-├── y_resampled_german.npy
 
-evaluation/
-├── class_dist_before_smote_uci.png
-├── class_dist_after_smote_uci.png
-├── class_dist_before_smote_german.png
-├── class_dist_after_smote_german.png
-├── feature_importance_uci.png
-├── feature_importance_german.png
-├── roc_curve_uci.png
-├── roc_curve_german.png
-├── results_plot_uci.png
-├── results_plot_german.png
-├── results_table_uci.csv
-├── results_table_german.csv
-├── training_times_table.csv
+- **data/** → Contains raw datasets and preprocessed numpy files
+- **evaluation/** → Stores generated plots, performance metrics, and CSV result files
+- **models/** → Saved trained models and feature names
+- **notebooks/** → Jupyter notebooks for data exploration, preprocessing, and analysis
+- **src/** → Python scripts for data processing, training, evaluation, plotting, and benchmarking
 
-models/
-├── rf_model_uci.pkl
-├── rf_model_german.pkl
-├── feature_names_uci.pkl
-├── feature_names_german.pkl
-
-notebooks/
-├── 01_data_exploration.ipynb
-├── 02_preprocessing.ipynb
-├── 03_model_training.ipynb
-├── 04_evaluation.ipynb
-├── 05_class_distribution_german.ipynb
-
-src/
-├── train_model.py
-├── evaluate.py
-├── evaluate_all_models_uci.py
-├── evaluate_all_models_german.py
-├── plot_rfc_uci.py
-├── plot_rfc_german.py
-├── plot_uci_class_distribution.py
-├── features_importance_uci.py
-├── features_importance_german.py
-├── data_utils.py
-├── convert_german_to_csv.py
-├── benchmark_train_times.py
-├── preprocess.py
-```
 
 ---
 
@@ -107,35 +62,42 @@ pip install -r requirements.txt
 
 ### Train and evaluate a model
 
-Example: Train a model for UCI and South German dataset:
+1. **Preprocess data**
+Prepare the data for both datasets:
+
+```bash
+python src/preprocess.py
+ 
+```
+
+2. **Train Models**
+Train a model for UCI and South German dataset:
 
 ```bash
 python src/train_model.py 
 ```
 
-See more arguments in:
+3. **Evaluate All Models**
+Run evaluation scripts for model performance comparisons:
 
 ```bash
-python src/train_model.py --help
+python src/evaluate_all_models_uci.py
+python src/evaluate_all_models_german.py
 ```
+
 
 ---
 
 ## 📊 Generating Plots
 
-- Class distributions:
-  - `src/plot_uci_class_distribution.py`
-  - `notebooks/05_class_distribution_german.ipynb`
+- Class distributions before and after SMOTE
 
-- Feature importance:
-  - `src/features_importance_uci.py`
-  - `src/features_importance_german.py`
+- Feature importance visualizations
 
-- ROC curves:
-  - Plots saved in `evaluation/`
+- ROC curves for model comparisons
 
-- Training times benchmark:
-  - `src/benchmark_train_times.py`
+- Performance summary plots
+  
 
 ---
 

@@ -5,7 +5,7 @@ message: "If you use this software or datasets, please cite as follows."
 authors:
   - family-names: "Jha"
     given-names: "Prashant"
-    orcid: ""
+    orcid: "https://orcid.org/0009-0008-6830-0647"
 
 
 title: "Credit Risk Prediction using Machine Learning"
@@ -19,7 +19,7 @@ preferred-citation:
   authors:
     - family-names: "Jha"
       given-names: "Prashant"
-      orcid: ""
+      orcid: "https://orcid.org/0009-0008-6830-0647"
   title: "Credit Risk Prediction Using Machine Learning: A Comparative Study on Benchmark Datasets"
   journal: ""   
   volume: 
