@@ -1,137 +1,162 @@
-# Credit Risk Prediction using Machine Learning
+# Credit Risk Prediction via Machine Learning: Comprehensive Analysis and Benchmarking
 
-This repository contains Python scripts, Jupyter notebooks, and data for a comprehensive machine learning study on credit risk prediction. The work evaluates various ML models on the **UCI Credit Card Default dataset** and the **South German Credit dataset**. It includes data preprocessing, feature analysis, class balancing with SMOTE, model training, evaluation metrics, and visualization of results.
+## Project Overview
 
----
+This repository contains reproducible code and data supporting the paper
+**"Credit Risk Prediction via Machine Learning: A Comparative Study of
+Benchmark Datasets."**\
+The goal is to compare modern machine learning models for credit risk
+assessment using two benchmark datasets (UCI Credit Card Default and
+South German Credit).\
+The repository enables technical review, code audit, and results
+reproduction for editors, reviewers, and domain experts.
 
-## 🔗 Project Overview
+## Key Features
 
-- Analyze credit risk using modern ML models
-- Compare performance of Logistic Regression, Random Forest, XGBoost, and SVM
-- Address class imbalance via SMOTE
-- Visualize:
-  - Feature importances
-  - Class distributions
-  - ROC curves
-- Benchmark model training times
+-   Implements and compares four supervised learning models: **Logistic
+    Regression, Random Forest, XGBoost, and Support Vector Machine
+    (SVM).**
+-   Addresses class imbalance with the **Synthetic Minority Oversampling
+    Technique (SMOTE).**
+-   Includes scripts for preprocessing, model training,
+    cross-validation, performance evaluation, feature analysis, and
+    visualization.
+-   Stores all results, plots, and models for full reproducibility.
 
-This work contributes to improving credit risk scoring and aligns with regulatory and ethical considerations for AI in finance.
+## Repository Structure
 
----
+  -----------------------------------------------------------------------
+  Folder                              Description
+  ----------------------------------- -----------------------------------
+  **data/**                           Contains raw datasets and
+                                      preprocessed files (e.g., numpy
+                                      formats)
 
-## 📁 Project Structure
+  **models/**                         Trained model objects and feature
+                                      name indices
 
-Your project folders and key files:
+  **evaluation/**                     Performance metrics, plots (ROC
+                                      curves, feature importance), CSVs
 
+  **notebooks/**                      Jupyter notebooks for data
+                                      exploration and step-by-step
+                                      analysis
 
-- **data/** → Contains raw datasets and preprocessed numpy files
-- **evaluation/** → Stores generated plots, performance metrics, and CSV result files
-- **models/** → Saved trained models and feature names
-- **notebooks/** → Jupyter notebooks for data exploration, preprocessing, and analysis
-- **src/** → Python scripts for data processing, training, evaluation, plotting, and benchmarking
+  **src/**                            Python scripts for workflow
+                                      automation (preprocessing,
+                                      training, plotting)
+  -----------------------------------------------------------------------
 
+## Datasets Utilized
 
----
+-   **UCI Credit Card Default Dataset:** 30,000 records, 24 columns,
+    including payment history, credit limit, demographic features, and
+    binary target variable (default/no-default).
+-   **South German Credit Dataset:** 1,000 records, 21 columns,
+    including sociodemographic and financial predictors, binary
+    classification for good/bad credit risk.
 
-## 📦 Installation
+Both datasets are public benchmarks widely used in academic and
+industrial research for credit scoring model comparison.
 
-1. **Clone the repository**
+## Methodology Highlights
 
-```bash
+### Preprocessing
+
+-   Handles missing values if any (both datasets confirm none).
+-   Categorical variables encoded using numerical codes or one-hot
+    encoding as appropriate.
+-   All numerical features scaled using **z-score normalization**.
+
+### Model Building
+
+-   SMOTE is applied for balancing minority and majority classes.
+-   Four classifiers (LR, RF, XGBoost, SVM) implemented using
+    **scikit-learn** and **XGBoost**.
+-   **5-Fold stratified cross-validation** used to ensure robust
+    estimates.
+
+### Evaluation Metrics
+
+-   Accuracy, Precision, Recall, F1 Score, and ROC-AUC.
+-   Model training times and computational considerations are
+    benchmarked.
+
+### Feature Analysis
+
+-   Feature importance produced using tree-based models and **SHAP
+    values**.
+-   Comparative performance plots and ROC curves are included.
+
+### Statistical Testing
+
+-   Model comparisons validated with significance testing (**independent
+    two-tailed t-tests**) on cross-validation results.
+
+## Usage Instructions
+
+### 1. Environment Setup
+
+``` bash
 git clone https://github.com/PrashantJha183/Credit-risk-prediction.git
 cd Credit-risk-prediction
-```
-
-2. **Create a virtual environment (recommended)**
-
-```bash
 python -m venv venv
-source venv/bin/activate      # On Linux/macOS
-venv\Scripts\activate         # On Windows
-```
-
-3. **Install dependencies**
-
-```bash
+source venv/bin/activate        # For Linux/macOS users
+venv\Scripts\activate           # For Windows users
 pip install -r requirements.txt
 ```
 
----
+### 2. Run Preprocessing and Train Models
 
-## 🚀 How to Run
-
-### Train and evaluate a model
-
-1. **Preprocess data**
-
-
-```bash
+``` bash
 python src/preprocess.py
+python src/train_model.py
 ```
 
-2. **Train Models**
+### 3. Model Evaluation
 
-
-```bash
-python src/train_model.py 
-```
-
-3. **Evaluate All Models**
-
-```bash
+``` bash
 python src/evaluate_all_models_uci.py
 python src/evaluate_all_models_german.py
 ```
 
+### 4. Visualizations
 
----
+Plots and summary CSVs are saved in the **evaluation/** folder (e.g.,
+ROC curves, feature importance, training time breakdown).
 
-## 📊 Generating Plots
+## Reproducibility and Audit
 
-- Class distributions before and after SMOTE
+-   All datasets, code, and result files required for reproduction are
+    provided.
+-   Full experimental workflow and foldwise cross-validation results
+    available.
+-   Model and metric benchmarks can be compared to published results in
+    the related paper and repository documentation.
 
-- Feature importance visualizations
+## Citation
 
-- ROC curves for model comparisons
+If used for publication, comparison, or audit, cite as:
 
-- Performance summary plots
-  
+**Prashant Jha, Credit Risk Prediction using Machine Learning, GitHub
+Repository, <https://github.com/PrashantJha183/Credit-risk-prediction>**
 
----
+## License
 
-## 📄 Results
+Repository code is covered under the license included in the project.
 
-**Tables and plots** summarizing model performance are saved in the `evaluation/` directory:
+## Contact
 
-- ROC curves for UCI and German datasets
-- Feature importance plots
-- Class balance before and after SMOTE
-- Training time comparisons
-- CSV files with detailed results
+For technical questions, issues or further collaboration:
 
----
+**Prashant Jha -- jhaprashant.works@gmail.com**
 
-## 📝 Citation
+## Repository Authors
 
-If you use this code or results, please cite the repository:
+See paper for full list and ORCID IDs.
 
-```
-Prashant Jha, Credit Risk Prediction using Machine Learning, GitHub Repository, https://github.com/PrashantJha183/Credit-risk-prediction
-```
+## References
 
----
-
-## 📊 Data Sources
-
-Data used in this project comes from publicly available benchmark datasets:
-
-- [UCI Credit Card Default Dataset](https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients)
-- [South German Credit Dataset](https://archive.ics.uci.edu/ml/datasets/statlog+german+credit+data)
-
----
-
-## 🔗 Related Work
-
-See references in the paper for further reading on credit scoring and machine learning.
-
----
+See in-paper references and repository for full citation list.\
+Peer-reviewed source data: **UCI Credit Card Default, South German
+Credit.**
