@@ -1,53 +1,77 @@
 cff-version: 1.2.0
 message: "If you use this software or datasets, please cite as follows."
 
-# Author of repository
 authors:
-  - family-names: "Jha"
-    given-names: "Prashant"
-    orcid: "https://orcid.org/0009-0008-6830-0647"
 
+family-names: "Jha"
+given-names: "Prashant"
+orcid: "https://orcid.org/0009-0008-6830-0647"
+
+family-names: "Kulkarni"
+given-names: "Yash"
+orcid: "https://orcid.org/0009-0005-4526-6501"
+
+family-names: "Sharma"
+given-names: "Pulkit"
+orcid: "https://orcid.org/0009-0004-5314-6748"
+
+family-names: "Gupta"
+given-names: "Jay"
+orcid: "https://orcid.org/0009-0000-0456-4231"
+
+family-names: "Joshi"
+given-names: "Manish"
+orcid: ""
 
 title: "Credit Risk Prediction using Machine Learning"
 version: "1.0.0"
 date-released: 2025-07-12
 url: "https://github.com/PrashantJha183/Credit-risk-prediction"
 
-# The preferred citation 
 preferred-citation:
-  type: article
-  authors:
-    - family-names: "Jha"
-      given-names: "Prashant"
-      orcid: "https://orcid.org/0009-0008-6830-0647"
-  title: "Credit Risk Prediction Using Machine Learning: A Comparative Study on Benchmark Datasets"
-  journal: ""   
-  volume: 
-  issue: 
-  year: 
-  month:
-  start:
-  end: 
-  doi: "" 
+type: article
+authors:
+- family-names: "Jha"
+given-names: "Prashant"
+- family-names: "Kulkarni"
+given-names: "Yash"
+- family-names: "Sharma"
+given-names: "Pulkit"
+- family-names: "Gupta"
+given-names: "Jay"
+- family-names: "Joshi"
+given-names: "Manish"
+title: "Credit Risk Prediction Using Machine Learning: A Comparative Study on Benchmark Datasets"
+journal: ""
+volume:
+issue:
+year: 2025
+month:
+start:
+end:
+doi: ""
 
-# Additional references (datasets used)
 references:
-  - type: dataset
-    title: "Default of Credit Card Clients Dataset"
-    authors:
-      - family-names: Yeh
-        given-names: I-Cheng
-      - family-names: Lien
-        given-names: Che-hui
-    year: 2009
-    publisher: UCI Machine Learning Repository
-    url: https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients
 
-  - type: dataset
-    title: "South German Credit Dataset"
-    authors:
-      - family-names: Hofmann
-        given-names: Peter
-    year: 2022
-    publisher: UCI Machine Learning Repository
-    url: https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)
+type: dataset
+title: "Default of Credit Card Clients Dataset"
+authors:
+
+family-names: "Yeh"
+given-names: "I-Cheng"
+
+family-names: "Lien"
+given-names: "Che-hui"
+year: 2009
+publisher: "UCI Machine Learning Repository"
+url: "https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients"
+
+type: dataset
+title: "South German Credit Dataset"
+authors:
+
+family-names: "Hofmann"
+given-names: "Peter"
+year: 2022
+publisher: "UCI Machine Learning Repository"
+url: "https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)"
